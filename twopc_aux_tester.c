@@ -128,9 +128,11 @@ _PG_init(void)
                             NULL);
         
 
+#if PG_VERSION_NUM >= 150000
     /* Reserve GUC prefix to prevent conflicts */
     MarkGUCPrefixReserved("twopc_aux_tester");
-    
+#endif
+
     /* Register callback for transaction events */
     RegisterXactCallback(twopc_aux_tester_callback, NULL);
     
