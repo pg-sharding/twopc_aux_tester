@@ -1,7 +1,10 @@
 # contrib/auth_delay/Makefile
 
-MODULES = twopc_aux_tester
 PGFILEDESC = "twopc_aux_tester - SPQR tester support"
+
+
+EXTENSION = twopc_aux_tester
+DATA =  twopc_aux_tester--1.0.sql
 
 ifdef USE_PGXS
 PG_CONFIG = pg_config
