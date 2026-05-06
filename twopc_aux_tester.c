@@ -1,21 +1,22 @@
 /*-------------------------------------------------------------------------
  *
- * 2pc_aux_tester.c
+ * twopc_aux_tester.c
  *    Example extension with simple XactCallback for testing two-phase commit
  *
  * Copyright (c) 2023, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
- *    contrib/2pc_aux_tester/2pc_aux_tester.c
+ *    contrib/twopc_aux_tester/twopc_aux_tester.c
  *
  *-------------------------------------------------------------------------
  */
 #include "postgres.h"
 #include "miscadmin.h"
+#include "access/xact.h"
 #include "utils/guc.h"
 
 PG_MODULE_MAGIC_EXT(
-                    .name = "2pc_aux_tester",
+                    .name = "twopc_aux_tester",
                     .version = PG_VERSION
 );
 
@@ -41,42 +42,42 @@ twopc_aux_tester_callback(XactEvent event, void *arg)
     {
         case XACT_EVENT_COMMIT:
             ereport(twopc_aux_tester_log_level,
-                    (errmsg("2pc_aux_tester: transaction COMMIT")));
+                    (errmsg("twopc_aux_tester: transaction COMMIT")));
             break;
             
         case XACT_EVENT_ABORT:
             ereport(twopc_aux_tester_log_level,
-                    (errmsg("2pc_aux_tester: transaction ABORT")));
+                    (errmsg("twopc_aux_tester: transaction ABORT")));
             break;
             
         case XACT_EVENT_PREPARE:
             ereport(twopc_aux_tester_log_level,
-                    (errmsg("2pc_aux_tester: transaction PREPARE")));
+                    (errmsg("twopc_aux_tester: transaction PREPARE")));
             break;
             
         case XACT_EVENT_PRE_COMMIT:
             ereport(twopc_aux_tester_log_level,
-                    (errmsg("2pc_aux_tester: PRE_COMMIT")));
+                    (errmsg("twopc_aux_tester: PRE_COMMIT")));
             break;
             
         case XACT_EVENT_PARALLEL_COMMIT:
             ereport(twopc_aux_tester_log_level,
-                    (errmsg("2pc_aux_tester: PARALLEL_COMMIT")));
+                    (errmsg("twopc_aux_tester: PARALLEL_COMMIT")));
             break;
             
         case XACT_EVENT_PARALLEL_ABORT:
             ereport(twopc_aux_tester_log_level,
-                    (errmsg("2pc_aux_tester: PARALLEL_ABORT")));
+                    (errmsg("twopc_aux_tester: PARALLEL_ABORT")));
             break;
             
         case XACT_EVENT_PRE_PREPARE:
             ereport(twopc_aux_tester_log_level,
-                    (errmsg("2pc_aux_tester: PRE_PREPARE")));
+                    (errmsg("twopc_aux_tester: PRE_PREPARE")));
             break;
             
         default:
             ereport(twopc_aux_tester_log_level,
-                    (errmsg("2pc_aux_tester: unknown event %d", event)));
+                    (errmsg("twopc_aux_tester: unknown event %d", event)));
             break;
     }
 }
@@ -119,7 +120,7 @@ _PG_init(void)
     RegisterXactCallback(twopc_aux_tester_callback, NULL);
     
     ereport(LOG,
-            (errmsg("2pc_aux_tester: module initialized, callback registered")));
+            (errmsg("twopc_aux_tester: module initialized, callback registered")));
 }
 
 /*
@@ -132,6 +133,6 @@ _PG_fini(void)
     UnregisterXactCallback(twopc_aux_tester_callback, NULL);
     
     ereport(LOG,
-            (errmsg("2pc_aux_tester: module unloaded, callback removed")));
+            (errmsg("twopc_aux_tester: module unloaded, callback removed")));
 }
 
