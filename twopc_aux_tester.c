@@ -15,10 +15,7 @@
 #include "access/xact.h"
 #include "utils/guc.h"
 
-PG_MODULE_MAGIC_EXT(
-                    .name = "twopc_aux_tester",
-                    .version = PG_VERSION
-);
+PG_MODULE_MAGIC;
 
 /* GUC variables */
 static bool twopc_aux_tester_enabled = true;
@@ -53,6 +50,9 @@ twopc_aux_tester_callback(XactEvent event, void *arg)
             
         case XACT_EVENT_PREPARE:
 
+            if (twopc_aux_tester_error_on_prepare)
+                elog(ERROR, "injected error");
+
             ereport(twopc_aux_tester_log_level,
                     (errmsg("twopc_aux_tester: transaction PREPARE")));
             break;
@@ -73,8 +73,6 @@ twopc_aux_tester_callback(XactEvent event, void *arg)
             break;
             
         case XACT_EVENT_PRE_PREPARE:
-            if (twopc_aux_tester_error_on_prepare)
-                elog(ERROR, "injected error");
 
             ereport(twopc_aux_tester_log_level,
                     (errmsg("twopc_aux_tester: PRE_PREPARE")));
