@@ -1,0 +1,6 @@
+# 2pc_aux_tester extension
+comment = 'Example extension with XactCallback for testing two-phase commit'
+default_version = '1.0'
+module_pathname = '$libdir/2pc_aux_tester'
+relocatable = true
+
