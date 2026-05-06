@@ -2,9 +2,14 @@
 
 PGFILEDESC = "twopc_aux_tester - SPQR tester support"
 
+MODULE_big = twopc_aux_tester
+
+OBJS = \
+	$(WIN32RES) \
+	twopc_aux_tester.o
 
 EXTENSION = twopc_aux_tester
-DATA =  twopc_aux_tester--1.0.sql
+DATA =  twopc_aux_tester--1.0.sql 
 
 ifdef USE_PGXS
 PG_CONFIG = pg_config

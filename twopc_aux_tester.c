@@ -95,7 +95,7 @@ _PG_init(void)
                              &twopc_aux_tester_enabled,
                              true,
                              PGC_SUSET,
-                             GUC_NO_SHOW_ALL,
+                             GUC_NO_SHOW_ALL | GUC_NOT_IN_SAMPLE,
                              NULL,
                              NULL,
                              NULL);
@@ -108,8 +108,8 @@ _PG_init(void)
                             DEBUG5,
                             WARNING,
                             PGC_SUSET,
-                            GUC_NO_SHOW_ALL,
-                            NULL,
+                            GUC_NO_SHOW_ALL | GUC_NOT_IN_SAMPLE,
+			    NULL,
                             NULL,
                             NULL);
     
