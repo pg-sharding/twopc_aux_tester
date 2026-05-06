@@ -22,6 +22,7 @@ PG_MODULE_MAGIC_EXT(
 
 /* GUC variables */
 static bool twopc_aux_tester_enabled = true;
+static bool twopc_aux_tester_error_on_prepare = false;
 static int  twopc_aux_tester_log_level = LOG;
 
 /* Callback function prototype */
@@ -51,6 +52,7 @@ twopc_aux_tester_callback(XactEvent event, void *arg)
             break;
             
         case XACT_EVENT_PREPARE:
+
             ereport(twopc_aux_tester_log_level,
                     (errmsg("twopc_aux_tester: transaction PREPARE")));
             break;
@@ -71,6 +73,9 @@ twopc_aux_tester_callback(XactEvent event, void *arg)
             break;
             
         case XACT_EVENT_PRE_PREPARE:
+            if (twopc_aux_tester_error_on_prepare)
+                elog(ERROR, "injected error");
+
             ereport(twopc_aux_tester_log_level,
                     (errmsg("twopc_aux_tester: PRE_PREPARE")));
             break;
@@ -89,6 +94,17 @@ void
 _PG_init(void)
 {
     /* Define GUC variables */
+    DefineCustomBoolVariable("twopc_aux_tester.error_on_prepare",
+                             "Enable/disable transaction PREPARE event error",
+                             NULL,
+                             &twopc_aux_tester_error_on_prepare,
+                             false,
+                             PGC_SUSET,
+                             GUC_NO_SHOW_ALL | GUC_NOT_IN_SAMPLE,
+                             NULL,
+                             NULL,
+                             NULL);
+
     DefineCustomBoolVariable("twopc_aux_tester.enabled",
                              "Enable/disable transaction event logging",
                              NULL,
@@ -109,10 +125,11 @@ _PG_init(void)
                             WARNING,
                             PGC_SUSET,
                             GUC_NO_SHOW_ALL | GUC_NOT_IN_SAMPLE,
-			    NULL,
+			                NULL,
                             NULL,
                             NULL);
-    
+        
+
     /* Reserve GUC prefix to prevent conflicts */
     MarkGUCPrefixReserved("twopc_aux_tester");
     
